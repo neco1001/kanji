@@ -1,38 +1,12 @@
 <%= form_with url: test_path(format: :pdf), method: :get do |form| %>
-  <div>
-    <p>
-    ①
-    <%= select_tag :question_1, options_for_select([['---選択してください---', ''], ['山', '1'], ['川', '2'], ['一', '3'], ['二', '4'], ['三', '5']]) %>
-    </p>
-  </div>
-
-  <div>
-    <p>
-    ②
-    <%= select_tag :question_2, options_for_select([['---選択してください---', ''], ['山', '1'], ['川', '2'], ['一', '3'], ['二', '4'], ['三', '5']]) %>
-    </p>
-  </div>
-
-  <div>
-    <p>
-    ③
-    <%= select_tag :question_3, options_for_select([['---選択してください---', ''], ['山', '1'], ['川', '2'], ['一', '3'], ['二', '4'], ['三', '5']]) %>
-    </p>
-  </div>
-
-  <div>
-    <p>
-    ④
-    <%= select_tag :question_4, options_for_select([['---選択してください---', ''], ['山', '1'], ['川', '2'], ['一', '3'], ['二', '4'], ['三', '5']]) %>
-    </p>
-  </div>
-
-  <div>
-    <p>
-    ⑤
-    <%= select_tag :question_5, options_for_select([['---選択してください---', ''], ['山', '1'], ['川', '2'], ['一', '3'], ['二', '4'], ['三', '5']]) %>
-    </p>
-  </div>
+  <% (1..5).each do |i| %>
+    <div>
+      <p>
+      <%= i %>
+      <%= select_tag "question_#{i}", options_for_select([['---選択してください---', ''], ['山', '1'], ['川', '2'], ['一', '3'], ['二', '4'], ['三', '5'], ['赤', '6']]) %>
+      </p>
+    </div>
+  <% end %>
 
   <%= form.submit 'PDF出力' %>
 <% end %>

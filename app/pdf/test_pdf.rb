@@ -31,9 +31,18 @@ class TestPdf < Prawn::Document
       when '5'
         draw_text 'さ', at: [start_x_position, start_y_position]
         draw_text 'ん', at: [start_x_position, start_y_position - 40]
+      when '6'
+        draw_text 'あ', at: [start_x_position, start_y_position]
+        draw_text 'か', at: [start_x_position, start_y_position - 40]
       end
       bounding_box([start_x_position - 90, start_y_position + 20], width: 80, height: 80) do
         stroke_bounds
+      end
+
+      if questions[i] == '6'
+        bounding_box([start_x_position - 90, start_y_position - 60], width: 80, height: 80) do
+          text 'い', size: 50, align: :center, valign: :center
+        end
       end
     end
   end
