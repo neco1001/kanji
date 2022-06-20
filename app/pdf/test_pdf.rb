@@ -1,47 +1,40 @@
 class TestPdf < Prawn::Document
-  def initialize
+  def initialize(questions)
     super(
       page_size: 'A4',
       page_layout: :landscape
     )
+
     # 座標を表示
     stroke_axis
 
     # fontをパスで指定
     font 'app/assets/fonts/ipaexg.ttf'
 
-    # ①
-    draw_text 'や', at: [740, 480]
-    draw_text 'ま', at: [740, 440]
-    bounding_box([650, 500], width: 80, height: 80) do
-      stroke_bounds
-    end
-
-    # ②
-    draw_text 'か', at: [590, 480]
-    draw_text 'わ', at: [590, 440]
-    bounding_box([500, 500], width: 80, height: 80) do
-      stroke_bounds
-    end
-
-    # ③
-    draw_text 'い', at: [440, 480]
-    draw_text 'ち', at: [440, 440]
-    bounding_box([350, 500], width: 80, height: 80) do
-      stroke_bounds
-    end
-
-    # ④
-    draw_text 'に', at: [290, 480]
-    bounding_box([200, 500], width: 80, height: 80) do
-      stroke_bounds
-    end
-
-    # ⑤
-    draw_text 'さ', at: [140, 480]
-    draw_text 'ん', at: [140, 440]
-    bounding_box([50, 500], width: 80, height: 80) do
-      stroke_bounds
+    start_x_positions = [740, 590, 440, 290, 140]
+    start_y_positions = [480, 480, 480, 480, 480]
+    5.times do |i|
+      start_x_position = start_x_positions[i]
+      start_y_position = start_y_positions[i]
+      case questions[i]
+      when '1'
+        draw_text 'や', at: [start_x_position, start_y_position]
+        draw_text 'ま', at: [start_x_position, start_y_position - 40]
+      when '2'
+        draw_text 'か', at: [start_x_position, start_y_position]
+        draw_text 'わ', at: [start_x_position, start_y_position - 40]
+      when '3'
+        draw_text 'い', at: [start_x_position, start_y_position]
+        draw_text 'ち', at: [start_x_position, start_y_position - 40]
+      when '4'
+        draw_text 'に', at: [start_x_position, start_y_position]
+      when '5'
+        draw_text 'さ', at: [start_x_position, start_y_position]
+        draw_text 'ん', at: [start_x_position, start_y_position - 40]
+      end
+      bounding_box([start_x_position - 90, start_y_position + 20], width: 80, height: 80) do
+        stroke_bounds
+      end
     end
   end
 end
