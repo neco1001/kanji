@@ -3,7 +3,7 @@
     <div>
       <p>
       <%= i %>
-      <%= select_tag "question_#{i}", options_for_select([['---選択してください---', ''], ['山', '1'], ['川', '2'], ['一', '3'], ['二', '4'], ['三', '5'], ['赤', '6']]) %>
+      <%= select_tag "question_#{i}", options_from_collection_for_select(@kanjis, :id, :character), prompt: '---選択してください---' %>
       </p>
     </div>
   <% end %>
