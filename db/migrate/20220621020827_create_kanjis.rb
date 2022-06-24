@@ -1,6 +1,6 @@
-class CreateKanjiCharacters < ActiveRecord::Migration[7.0]
+class CreateKanjis < ActiveRecord::Migration[7.0]
   def change
-    create_table :kanji_characters do |t|
+    create_table :kanjis do |t|
       t.string :character, null: false, index: { unique: true }
       t.timestamps
     end
