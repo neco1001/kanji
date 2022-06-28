@@ -11,6 +11,16 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema[7.0].define(version: 2022_06_21_022133) do
+  create_table "kanas", charset: "utf8mb4", force: :cascade do |t|
+    t.bigint "kanji_id", null: false
+    t.integer "type", null: false
+    t.string "yomigana", null: false
+    t.string "okurigana"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["kanji_id"], name: "index_kanas_on_kanji_id"
+  end
+
   create_table "kanjis", charset: "utf8mb4", force: :cascade do |t|
     t.string "character", null: false
     t.datetime "created_at", null: false
@@ -18,15 +28,5 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_21_022133) do
     t.index ["character"], name: "index_kanjis_on_character", unique: true
   end
 
-  create_table "readings", charset: "utf8mb4", force: :cascade do |t|
-    t.bigint "kanji_id", null: false
-    t.integer "type", null: false
-    t.string "kana", null: false
-    t.string "okurigana"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["kanji_id"], name: "index_readings_on_kanji_id"
-  end
-
-  add_foreign_key "readings", "kanjis"
+  add_foreign_key "kanas", "kanjis"
 end
