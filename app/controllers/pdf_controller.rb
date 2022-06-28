@@ -4,8 +4,8 @@ class PdfController < ApplicationController
       format.html
         @kanjis = Kanji.all
       format.pdf do
-        questions = [params[:question_1], params[:question_2], params[:question_3], params[:question_4], params[:question_5]]
-        test_pdf = TestPdf.new(questions).render
+        kanji_ids = [params[:kanji_id_1], params[:kanji_id_2], params[:kanji_id_3], params[:kanji_id_4], params[:kanji_id_5]].reject(&:blank?)
+        test_pdf = TestPdf.new(kanji_ids).render
         send_data test_pdf,
           filename:    'test.pdf',
           type:        'application/pdf',
