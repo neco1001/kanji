@@ -1,5 +1,5 @@
 [
-  { character: '山', onyomi: [], kunyomi: ['やま'] },
+  { character: '山', onyomi: ['サン'], kunyomi: ['やま'] },
   { character: '川', onyomi: [], kunyomi: ['かわ'] },
   { character: '一', onyomi: ['イチ'], kunyomi: [] },
   { character: '二', onyomi: ['ニ'], kunyomi: [] },

@@ -18,7 +18,7 @@ class TestPdf < Prawn::Document
       start_x_position = start_x_positions[i]
       move_cursor_to start_y_position
       kanji = Kanji.find(kanji_id)
-      kana = kanji.kanas.first
+      kana = kanji.kanas.sample
 
       kana.yomigana.chars.each do |char|
         text_box char, at: [start_x_position, cursor], width: 20, height: height / kana.yomigana.size, align: :center, valign: :center
