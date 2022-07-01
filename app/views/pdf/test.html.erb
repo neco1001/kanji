@@ -2,8 +2,8 @@
   <% (1..5).each do |i| %>
     <div>
       <p>
-      <%= i %>
-      <%= select_tag "kanji_id_#{i}", options_from_collection_for_select(@kanjis, :id, :character), prompt: '---選択してください---' %>
+        <%= i %>
+        <%= select_tag "kanji_id_#{i}", options_from_collection_for_select(@kanjis, :id, :character), prompt: '---選択してください---' %>
       </p>
     </div>
   <% end %>
