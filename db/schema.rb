@@ -23,6 +23,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_21_022133) do
 
   create_table "kanjis", charset: "utf8mb4", force: :cascade do |t|
     t.string "character", null: false
+    t.integer "school_year", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["character"], name: "index_kanjis_on_character", unique: true
