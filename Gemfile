@@ -73,3 +73,5 @@ end
 
 # PDF出力
 gem 'prawn'
+gem 'bootstrap'
+gem 'jquery-rails'
