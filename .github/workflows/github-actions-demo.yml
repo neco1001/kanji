@@ -3,6 +3,7 @@ on: [push]
 
 jobs:
   Demo:
+    name: Demo Job
     runs-on: ubuntu-latest
     steps:
       - name: Display event trigger
