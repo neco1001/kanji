@@ -11,8 +11,8 @@ jobs:
       - name: Display runner OS
         run: echo "🐧 Running on a ${{ runner.os }} server hosted by GitHub."
 
-      - name: Display branch and repository
-        run: echo "🔎 Branch: ${{ github.ref }}, Repository: ${{ github.repository }}."
+      # - name: Display branch and repository
+      #   run: echo "🔎 Branch: ${{ github.ref }}, Repository: ${{ github.repository }}."
 
       - name: Check out repository code
         uses: actions/checkout@v4
