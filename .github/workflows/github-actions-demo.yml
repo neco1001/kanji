@@ -20,12 +20,17 @@ jobs:
       - name: List repository files
         run: ls ${{ github.workspace }}
 
-      - name: Set output test
-        id: output_test
-        run: echo "test=これはテストです。" >> $GITHUB_OUTPUT
+      - name: Set output test1
+        id: output_test_1
+        run: echo "test=これはテスト1です。" >> $GITHUB_OUTPUT
+
+      - name: Set output test2
+        id: output_test_2
+        run: echo "test=これはテスト2です。" >> $GITHUB_OUTPUT
 
       - name: Display the test output
-        run: echo "test output ${{ steps.output_test.outputs.test }}"
+        run: echo "test output ${{ steps.output_test_1.outputs.test }}"
+        run: echo "test output ${{ steps.output_test_2.outputs.test }}"
 
       - name: Display job status
         run: echo "🍏 The current job status is ${{ job.status }}."
