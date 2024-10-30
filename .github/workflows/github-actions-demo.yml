@@ -21,6 +21,7 @@ jobs:
         run: ls ${{ github.workspace }}
 
       - name: set-output test
+        id: output_test
         run: echo "::set-output name=test::これはテストです。"
 
       - name: Display the test output
