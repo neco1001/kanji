@@ -20,5 +20,11 @@ jobs:
       - name: List repository files
         run: ls ${{ github.workspace }}
 
+      - name: set-output test
+        run: echo "::set-output name=test::これはテストです。"
+
+      - name: Display the test output
+        run: echo "test output ${{ steps.output_test.outputs.test }}"
+
       - name: Display job status
         run: echo "🍏 The current job status is ${{ job.status }}."
