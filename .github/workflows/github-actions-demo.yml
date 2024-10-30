@@ -28,9 +28,11 @@ jobs:
         id: output_test_2
         run: echo "test=これはテスト2です。" >> $GITHUB_OUTPUT
 
-      - name: Display the test output
-        run: echo "test output ${{ steps.output_test_1.outputs.test }}"
-        run: echo "test output ${{ steps.output_test_2.outputs.test }}"
+      - name: Display the test1 output
+        run: echo "test1 output ${{ steps.output_test_1.outputs.test }}"
+
+      - name: Display the test2 output
+        run: echo "test2 output ${{ steps.output_test_2.outputs.test }}"
 
       - name: Display job status
         run: echo "🍏 The current job status is ${{ job.status }}."
