@@ -71,6 +71,7 @@ jobs:
           script: |
             // このactionが動く前日の日付のリリースブランチを探してくる
             date = new Date
+            date.setDate(date.getDate() + 1)
             date_string = [date.getYear() + 1900, ('0' + (date.getMonth() + 1)).slice(-2) , ('0' + date.getDate()).slice(-2)].join('-')
             const repos = await github.issues.listForRepo({
                 owner: context.repo.owner,
