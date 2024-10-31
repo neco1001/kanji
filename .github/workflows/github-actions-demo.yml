@@ -1,18 +1,112 @@
-name: GitHub Actions Demo
-run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
+name: Simple GitHub Actions Demo
 on: [push]
+
 jobs:
-  Explore-GitHub-Actions:
+  Demo:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
-      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
-      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
+      - name: Display event trigger
+        run: echo "🎉 This job was triggered by a ${{ github.event_name }} event."
+
+      - name: Display runner OS
+        run: echo "🐧 Running on a ${{ runner.os }} server hosted by GitHub."
+
+      - name: Display branch and repository
+        run: echo "🔎 Branch ${{ github.ref }}, Repository ${{ github.repository }}."
+
       - name: Check out repository code
         uses: actions/checkout@v4
-      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
-      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
-      - name: List files in the repository
-        run: |
-          ls ${{ github.workspace }}
-      - run: echo "🍏 This job's status is ${{ job.status }}."
+
+      - name: List repository files
+        run: ls ${{ github.workspace }}
+
+      - name: Set output test1
+        id: output_test_1
+        run: echo "test=これはテスト1です。" >> $GITHUB_OUTPUT
+
+      - name: Set output test2
+        id: output_test_2
+        run: echo "test=これはテスト2です。" >> $GITHUB_OUTPUT
+
+      - name: Display the test1 output
+        run: echo "test1 output ${{ steps.output_test_1.outputs.test }}"
+
+      - name: Display the test2 output
+        run: echo "test2 output ${{ steps.output_test_2.outputs.test }}"
+
+      - name: Display job status
+        run: echo "🍏 The current job status is ${{ job.status }}."
+
+      # - name: Create Pull Request
+      #   uses: actions/github-script@v7
+      #   with:
+      #     github-token: ${{ secrets.GITHUB_TOKEN }}
+      #     result-encoding: string
+      #     script: |
+      #       date = new Date
+      #       date.setDate(date.getDate() + 1)
+      #       date_string = [date.getYear() + 1900, ('0' + (date.getMonth() + 1)).slice(-2) , ('0' + date.getDate()).slice(-2)].join('-')
+      #       github.rest.pulls.create(
+      #         {
+      #           owner: context.repo.owner,
+      #           repo: context.repo.repo,
+      #           title: date_string + ' next production release',
+      #           head: '${{ github.ref }}',
+      #           base: 'main'
+      #         }).then((value) =>
+      #           github.rest.issues.addLabels(
+      #             {
+      #               owner: context.repo.owner,
+      #               repo: context.repo.repo,
+      #               issue_number: value.data.number,
+      #               labels: [ 'deploy:auto' ]
+      #             })
+      #       )
+
+      - name: Find Pull Request
+        uses: actions/github-script@v7
+        id: find_pullrequests
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            // このactionが動く前日の日付のリリースブランチを探してくる
+            date = new Date
+            date.setDate(date.getDate() + 1)
+            date_string = [date.getYear() + 1900, ('0' + (date.getMonth() + 1)).slice(-2) , ('0' + date.getDate()).slice(-2)].join('-')
+            const repos = await github.rest.issues.listForRepo({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                labels: 'deploy:auto',
+                state: 'open'
+            })
+            let pulls = [];
+            for (const [index, pr] of Object.entries(repos.data)) {
+              pr.title.indexOf(date_string) > -1 && pulls.push(pr);
+            };
+            if (pulls.length == 0) {
+              console.log("Pull Request not found");
+              process.exit(0);
+            }
+            console.log("Retrieved Pull Requests:", pulls);
+            return pulls;
+
+      - name: Merge Pull Request
+        uses: actions/github-script@v3
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          result-encoding: string
+          script: |
+            const pulls = JSON.parse('${{ steps.find_pullrequests.outputs.result }}');
+            for (const [index, pr] of Object.entries(pulls)) {
+                github.pulls.merge({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  pull_number: pr.number
+                }).then((response) => {
+                  if (!response.data.merged) {
+                    core.setFailed("Pull Request cannot be merged")
+                  } else {
+                    console.log("merge successful")
+                  }
+                })
+            }
