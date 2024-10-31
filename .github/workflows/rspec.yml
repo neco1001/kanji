@@ -33,7 +33,7 @@ jobs:
         with:
           push: false
           load: true
-          file: config/docker/app/Dockerfile
+          file: Dockerfile
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
           builder: ${{ steps.buildx.outputs.name }}
