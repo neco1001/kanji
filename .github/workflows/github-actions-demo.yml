@@ -64,7 +64,7 @@ jobs:
       #       )
 
       - name: Find Pull Request
-        uses: actions/github-script@v3
+        uses: actions/github-script@v7
         id: find_pullrequests
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
