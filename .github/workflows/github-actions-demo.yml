@@ -87,4 +87,5 @@ jobs:
               console.log("Pull Request not found");
               process.exit(0);
             }
+            console.log("Retrieved Pull Requests:", pulls);
             return pulls;
