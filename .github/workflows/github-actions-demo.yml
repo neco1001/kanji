@@ -37,31 +37,31 @@ jobs:
       - name: Display job status
         run: echo "🍏 The current job status is ${{ job.status }}."
 
-      - name: Create Pull Request
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          result-encoding: string
-          script: |
-            date = new Date
-            date.setDate(date.getDate() + 1)
-            date_string = [date.getYear() + 1900, ('0' + (date.getMonth() + 1)).slice(-2) , ('0' + date.getDate()).slice(-2)].join('-')
-            github.rest.pulls.create(
-              {
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                title: date_string + ' next production release',
-                head: '${{ github.ref }}',
-                base: 'main'
-              }).then((value) =>
-                github.rest.issues.addLabels(
-                  {
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
-                    issue_number: value.data.number,
-                    labels: [ 'deploy:auto' ]
-                  })
-            )
+      # - name: Create Pull Request
+      #   uses: actions/github-script@v7
+      #   with:
+      #     github-token: ${{ secrets.GITHUB_TOKEN }}
+      #     result-encoding: string
+      #     script: |
+      #       date = new Date
+      #       date.setDate(date.getDate() + 1)
+      #       date_string = [date.getYear() + 1900, ('0' + (date.getMonth() + 1)).slice(-2) , ('0' + date.getDate()).slice(-2)].join('-')
+      #       github.rest.pulls.create(
+      #         {
+      #           owner: context.repo.owner,
+      #           repo: context.repo.repo,
+      #           title: date_string + ' next production release',
+      #           head: '${{ github.ref }}',
+      #           base: 'main'
+      #         }).then((value) =>
+      #           github.rest.issues.addLabels(
+      #             {
+      #               owner: context.repo.owner,
+      #               repo: context.repo.repo,
+      #               issue_number: value.data.number,
+      #               labels: [ 'deploy:auto' ]
+      #             })
+      #       )
 
       - name: Find Pull Request
         uses: actions/github-script@v7
@@ -98,7 +98,7 @@ jobs:
           script: |
             const pulls = JSON.parse('${{ steps.find_pullrequests.outputs.result }}');
             for (const [index, pr] of Object.entries(pulls)) {
-                github.pulls.merge({
+                github.rest.pulls.merge({
                   owner: context.repo.owner,
                   repo: context.repo.repo,
                   pull_number: pr.number
