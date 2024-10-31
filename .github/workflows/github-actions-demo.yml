@@ -170,7 +170,7 @@ jobs:
             return text;
 
       - name: Send releasenotes
-        uses: slackapi/slack-github-action@v1.18.0
+        uses: slackapi/slack-github-action@v1
         with:
           payload: |
             {
