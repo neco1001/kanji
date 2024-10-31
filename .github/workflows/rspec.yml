@@ -60,7 +60,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           json-path: rspec_results.json
-      #   if: always()
+        if: always()
       - name: change owner of vender directory(some files owner is root)
         run: sudo chown -R runner:docker vendor/bundle
 
