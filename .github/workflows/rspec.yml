@@ -55,11 +55,11 @@ jobs:
                               --format json \
                               --out rspec_results.json \
                               --format progress
-      # - name: RSpec Report
-      #   uses: SonicGarden/rspec-report-action@v3
-      #   with:
-      #     token: ${{ secrets.GITHUB_TOKEN }}
-      #     json-path: rspec_results.json
+      - name: RSpec Report
+        uses: SonicGarden/rspec-report-action@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          json-path: rspec_results.json
       #   if: always()
       - name: change owner of vender directory(some files owner is root)
         run: sudo chown -R runner:docker vendor/bundle
