@@ -37,28 +37,53 @@ jobs:
       - name: Display job status
         run: echo "🍏 The current job status is ${{ job.status }}."
 
-      - name: Create Pull Request
-        uses: actions/github-script@v7
+      # - name: Create Pull Request
+      #   uses: actions/github-script@v7
+      #   with:
+      #     github-token: ${{ secrets.GITHUB_TOKEN }}
+      #     result-encoding: string
+      #     script: |
+      #       date = new Date
+      #       date.setDate(date.getDate() + 1)
+      #       date_string = [date.getYear() + 1900, ('0' + (date.getMonth() + 1)).slice(-2) , ('0' + date.getDate()).slice(-2)].join('-')
+      #       github.rest.pulls.create(
+      #         {
+      #           owner: context.repo.owner,
+      #           repo: context.repo.repo,
+      #           title: date_string + ' next production release',
+      #           head: '${{ github.ref }}',
+      #           base: 'main'
+      #         }).then((value) =>
+      #           github.rest.issues.addLabels(
+      #             {
+      #               owner: context.repo.owner,
+      #               repo: context.repo.repo,
+      #               issue_number: value.data.number,
+      #               labels: [ 'deploy:auto' ]
+      #             })
+      #       )
+
+      - name: Find Pull Request
+        uses: actions/github-script@v3
+        id: find_pullrequests
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          result-encoding: string
+          github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
+            // このactionが動く前日の日付のリリースブランチを探してくる
             date = new Date
-            date.setDate(date.getDate() + 1)
             date_string = [date.getYear() + 1900, ('0' + (date.getMonth() + 1)).slice(-2) , ('0' + date.getDate()).slice(-2)].join('-')
-            github.rest.pulls.create(
-              {
+            const repos = await github.issues.listForRepo({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                title: date_string + ' next production release',
-                head: '${{ github.ref }}',
-                base: 'main'
-              }).then((value) =>
-                github.rest.issues.addLabels(
-                  {
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
-                    issue_number: value.data.number,
-                    labels: [ 'deploy:auto' ]
-                  })
-            )
+                labels: 'deploy:auto',
+                state: 'open'
+            })
+            let pulls = [];
+            for (const [index, pr] of Object.entries(repos.data)) {
+              pr.title.indexOf(date_string) > -1 && pulls.push(pr);
+            };
+            if (pulls.length == 0) {
+              console.log("Pull Request not found");
+              process.exit(0);
+            }
+            return pulls;
