@@ -46,8 +46,23 @@ jobs:
       - name: assets precompile
         run: |
           docker compose run -e "RAILS_ENV=${RAILS_ENV}" --rm app bundle exec rails assets:precompile
-
-
+      - name: Test
+        run: |
+          docker compose run -e "RAILS_ENV=${RAILS_ENV}" \
+                              -e "RUN_ON=GITHUB" \
+                              --rm app bundle exec rspec \
+                              --require spec_helper \
+                              --format json \
+                              --out rspec_results.json \
+                              --format progress
+      - name: RSpec Report
+        uses: SonicGarden/rspec-report-action@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          json-path: rspec_results.json
+        if: always()
+      - name: change owner of vender directory(some files owner is root)
+        run: sudo chown -R runner:docker vendor/bundle
 
       # ポイント 4 肥大化対策を行う
       # Temp fix
