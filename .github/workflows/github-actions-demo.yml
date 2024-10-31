@@ -73,7 +73,7 @@ jobs:
             date = new Date
             date.setDate(date.getDate() + 1)
             date_string = [date.getYear() + 1900, ('0' + (date.getMonth() + 1)).slice(-2) , ('0' + date.getDate()).slice(-2)].join('-')
-            const repos = await github.issues.listForRepo({
+            const repos = await github.rest.issues.listForRepo({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 labels: 'deploy:auto',
