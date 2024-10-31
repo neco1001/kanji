@@ -34,3 +34,5 @@
 
 !/tmp/.composer-cache
 !/tmp/.composer-cache/.keep
+!/tmp/.buildx-cache
+!/tmp/.buildx-cache/.keep
