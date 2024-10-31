@@ -110,3 +110,57 @@ jobs:
                   }
                 })
             }
+
+      - name: aggregate issues
+        uses: actions/github-script@v3
+        id: aggregate_issues
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          result-encoding: string
+          script: |
+            const pulls = JSON.parse('${{ steps.find_pullrequests.outputs.result }}');
+            const issues = {}
+            for (const [index, pr] of Object.entries(pulls)) {
+              let page = 1;
+              while(1) {
+                const commit_response = await github.pulls.listCommits({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  pull_number: pr.number,
+                  per_page: 100,
+                  page: page,
+                });
+                if (commit_response.data.length == 0) {
+                  break;
+                }
+                commit_response.data.forEach(commit => {
+                  // "[#1420] complete refactor for validation system"のようなフォーマットを期待
+                  const issue_id = (commit.commit.message.match(/^\[#(\d+)\]/) || [])[1];
+                  if (issue_id) {
+                    if (!issues[issue_id]) issues[issue_id] = {"commits": []};
+                    issues[issue_id].commits.push(commit);
+                  }
+                });
+  
+                page += 1;
+              }
+            }
+            for (const [issue_key, _] of Object.entries(issues)) {
+              issues[issue_key].issue = await github.issues.get({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue_key,
+              });
+              // console.log(issues[issue_key].issue.data.title);
+            }
+  
+            let text = "";
+            for (const [issue_key, _] of Object.entries(issues)) {
+              const issue = issues[issue_key].issue.data;
+              const commits = issues[issue_key].commits;
+              text += `• #${issue.number} <${issue.html_url}|${issue.title}>`;
+              text += "\\n";
+              // TODO 細かいコミットも入れたい
+              //commits.forEach(commit => text += `    • <${commit.html_url}|${commit.commit.message.split("\n")[0]}>\\n`);
+            }
+            return text;
