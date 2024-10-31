@@ -46,7 +46,7 @@ jobs:
             date = new Date
             date.setDate(date.getDate() + 1)
             date_string = [date.getYear() + 1900, ('0' + (date.getMonth() + 1)).slice(-2) , ('0' + date.getDate()).slice(-2)].join('-')
-            github.pulls.create(
+            github.rest.pulls.create(
               {
                 owner: context.repo.owner,
                 repo: context.repo.repo,
@@ -54,7 +54,7 @@ jobs:
                 head: '${{ github.ref }}',
                 base: 'main'
               }).then((value) =>
-                github.issues.addLabels(
+                github.rest.issues.addLabels(
                   {
                     owner: context.repo.owner,
                     repo: context.repo.repo,
