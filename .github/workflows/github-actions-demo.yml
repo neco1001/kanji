@@ -163,4 +163,5 @@ jobs:
               // TODO 細かいコミットも入れたい
               //commits.forEach(commit => text += `    • <${commit.html_url}|${commit.commit.message.split("\n")[0]}>\\n`);
             }
+            console.log("結果:", text);
             return text;
