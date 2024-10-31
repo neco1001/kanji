@@ -36,3 +36,17 @@ jobs:
 
       - name: Display job status
         run: echo "🍏 The current job status is ${{ job.status }}."
+
+      - name: Create Pull Request
+        uses: actions/github-script@v3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const response = await github.pulls.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: 'Auto-created PR from GitHub Actions',
+              head: '${{ github.ref }}',  // 現在のブランチ
+              base: 'main' // マージ先ブランチ
+            });
+            console.log(`Created PR: ${response.data.html_url}`);
