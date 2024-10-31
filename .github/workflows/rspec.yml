@@ -24,7 +24,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: /tmp/.composer-cache
-          key: ${{ runner.os }}-composer-${{ hashFiles('Gemfile.lock') }}-${{ hashFiles('yarn.lock') }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('Gemfile.lock') }}
           restore-keys: |
             ${{ runner.os }}-composer-${{ hashFiles('Gemfile.lock') }}
             ${{ runner.os }}-composer-
