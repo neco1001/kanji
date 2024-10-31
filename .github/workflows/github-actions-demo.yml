@@ -89,3 +89,24 @@ jobs:
             }
             console.log("Retrieved Pull Requests:", pulls);
             return pulls;
+
+      - name: Merge Pull Request
+        uses: actions/github-script@v3
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          result-encoding: string
+          script: |
+            const pulls = JSON.parse('${{ steps.find_pullrequests.outputs.result }}');
+            for (const [index, pr] of Object.entries(pulls)) {
+                github.pulls.merge({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  pull_number: pr.number
+                }).then((response) => {
+                  if (!response.data.merged) {
+                    core.setFailed("Pull Request cannot be merged")
+                  } else {
+                    console.log("merge successful")
+                  }
+                })
+            }
