@@ -168,3 +168,31 @@ jobs:
             }
             console.log("最終text:", text);
             return text;
+
+      - name: Send releasenotes
+        uses: slackapi/slack-github-action@v1.18.0
+        with:
+          payload: |
+            {
+              "author_name": "自動マージ",
+              "title": "リリースノート ${{ github.event.pull_request.html_url || github.event.head_commit.url }}",
+              "blocks": [
+                  {
+                      "type": "section",
+                      "text": {
+                          "type": "mrkdwn",
+                          "text": "リリースノート コミットログの先頭に [#XXXX] と入れるとリリースノートに記載されます"
+                      }
+                  },
+                  {
+                      "type": "section",
+                      "text": {
+                          "type": "mrkdwn",
+                          "text": "イシュー番号\n${{ steps.aggregate_issues.outputs.result }}"
+                      }
+                  }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
