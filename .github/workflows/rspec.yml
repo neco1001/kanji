@@ -37,3 +37,12 @@ jobs:
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
           builder: ${{ steps.buildx.outputs.name }}
+      - name: Setup bundles
+        run: |
+          docker compose run -e "RAILS_ENV=${RAILS_ENV}" --rm app bundle install --path=vendor/bundle --jobs=4
+      - name: Setup db
+        run: |
+          docker compose run -e "RAILS_ENV=${RAILS_ENV}" --rm app bundle exec rails db:reset --trace
+      - name: assets precompile
+        run: |
+          docker compose run -e "RAILS_ENV=${RAILS_ENV}" --rm app bundle exec rails assets:precompile
