@@ -147,3 +147,12 @@ jobs:
             }
 
             console.log("issues:", issues);
+
+            for (const [issue_key, _] of Object.entries(issues)) {
+              issues[issue_key].issue = await github.issues.get({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue_key,
+              });
+              console.log(issues[issue_key].issue.data.title);
+            }
