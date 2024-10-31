@@ -112,7 +112,7 @@ jobs:
             }
 
       - name: aggregate issues
-        uses: actions/github-script@v3
+        uses: actions/github-script@v7
         id: aggregate_issues
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
