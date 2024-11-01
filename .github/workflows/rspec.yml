@@ -31,8 +31,10 @@ jobs:
       - name: Build
         uses: docker/build-push-action@v6
         with:
+          context: .
           push: false
-          load: false
+          # load: true
+          outputs: type=docker,dest=/tmp/image.tar
           file: Dockerfile
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
