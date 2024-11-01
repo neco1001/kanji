@@ -19,3 +19,6 @@ jobs:
     steps:
     - name: install packages
       run: sudo apt update && sudo apt install -y jq
+    # Initial setup
+    - name: checkout
+      uses: actions/checkout@v4
