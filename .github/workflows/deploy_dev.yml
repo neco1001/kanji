@@ -28,3 +28,8 @@ jobs:
         aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ secrets.AWS_REGION }}
+
+    # build and push this image
+    - name: login ECR repository
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v2
