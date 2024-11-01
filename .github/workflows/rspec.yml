@@ -56,7 +56,7 @@ jobs:
                               --out rspec_results.json \
                               --format progress
       - name: RSpec Report
-        uses: SonicGarden/rspec-report-action@v3
+        uses: SonicGarden/rspec-report-action@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           json-path: rspec_results.json
