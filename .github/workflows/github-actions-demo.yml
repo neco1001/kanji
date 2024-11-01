@@ -1,198 +1,198 @@
-name: Simple GitHub Actions Demo
-on: [push]
+# name: Simple GitHub Actions Demo
+# on: [push]
 
-jobs:
-  Demo:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Display event trigger
-        run: echo "🎉 This job was triggered by a ${{ github.event_name }} event."
+# jobs:
+#   Demo:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Display event trigger
+#         run: echo "🎉 This job was triggered by a ${{ github.event_name }} event."
 
-      - name: Display runner OS
-        run: echo "🐧 Running on a ${{ runner.os }} server hosted by GitHub."
+#       - name: Display runner OS
+#         run: echo "🐧 Running on a ${{ runner.os }} server hosted by GitHub."
 
-      - name: Display branch and repository
-        run: echo "🔎 Branch ${{ github.ref }}, Repository ${{ github.repository }}."
+#       - name: Display branch and repository
+#         run: echo "🔎 Branch ${{ github.ref }}, Repository ${{ github.repository }}."
 
-      - name: Check out repository code
-        uses: actions/checkout@v4
+#       - name: Check out repository code
+#         uses: actions/checkout@v4
 
-      - name: List repository files
-        run: ls ${{ github.workspace }}
+#       - name: List repository files
+#         run: ls ${{ github.workspace }}
 
-      - name: Set output test1
-        id: output_test_1
-        run: echo "test=これはテスト1です。" >> $GITHUB_OUTPUT
+#       - name: Set output test1
+#         id: output_test_1
+#         run: echo "test=これはテスト1です。" >> $GITHUB_OUTPUT
 
-      - name: Set output test2
-        id: output_test_2
-        run: echo "test=これはテスト2です。" >> $GITHUB_OUTPUT
+#       - name: Set output test2
+#         id: output_test_2
+#         run: echo "test=これはテスト2です。" >> $GITHUB_OUTPUT
 
-      - name: Display the test1 output
-        run: echo "test1 output ${{ steps.output_test_1.outputs.test }}"
+#       - name: Display the test1 output
+#         run: echo "test1 output ${{ steps.output_test_1.outputs.test }}"
 
-      - name: Display the test2 output
-        run: echo "test2 output ${{ steps.output_test_2.outputs.test }}"
+#       - name: Display the test2 output
+#         run: echo "test2 output ${{ steps.output_test_2.outputs.test }}"
 
-      - name: Display job status
-        run: echo "🍏 The current job status is ${{ job.status }}."
+#       - name: Display job status
+#         run: echo "🍏 The current job status is ${{ job.status }}."
 
-      - name: Create Pull Request
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          result-encoding: string
-          script: |
-            date = new Date
-            date.setDate(date.getDate() + 1)
-            date_string = [date.getYear() + 1900, ('0' + (date.getMonth() + 1)).slice(-2) , ('0' + date.getDate()).slice(-2)].join('-')
-            github.rest.pulls.create(
-              {
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                title: date_string + ' next production release',
-                head: '${{ github.ref }}',
-                base: 'main'
-              }).then((value) =>
-                github.rest.issues.addLabels(
-                  {
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
-                    issue_number: value.data.number,
-                    labels: [ 'deploy:auto' ]
-                  })
-            )
+#       - name: Create Pull Request
+#         uses: actions/github-script@v7
+#         with:
+#           github-token: ${{ secrets.GITHUB_TOKEN }}
+#           result-encoding: string
+#           script: |
+#             date = new Date
+#             date.setDate(date.getDate() + 1)
+#             date_string = [date.getYear() + 1900, ('0' + (date.getMonth() + 1)).slice(-2) , ('0' + date.getDate()).slice(-2)].join('-')
+#             github.rest.pulls.create(
+#               {
+#                 owner: context.repo.owner,
+#                 repo: context.repo.repo,
+#                 title: date_string + ' next production release',
+#                 head: '${{ github.ref }}',
+#                 base: 'main'
+#               }).then((value) =>
+#                 github.rest.issues.addLabels(
+#                   {
+#                     owner: context.repo.owner,
+#                     repo: context.repo.repo,
+#                     issue_number: value.data.number,
+#                     labels: [ 'deploy:auto' ]
+#                   })
+#             )
 
-      - name: Find Pull Request
-        uses: actions/github-script@v7
-        id: find_pullrequests
-        with:
-          github-token: ${{secrets.GITHUB_TOKEN}}
-          script: |
-            // このactionが動く前日の日付のリリースブランチを探してくる
-            date = new Date
-            date.setDate(date.getDate() + 1)
-            date_string = [date.getYear() + 1900, ('0' + (date.getMonth() + 1)).slice(-2) , ('0' + date.getDate()).slice(-2)].join('-')
-            const repos = await github.rest.issues.listForRepo({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                labels: 'deploy:auto',
-                state: 'open'
-            })
-            let pulls = [];
-            for (const [index, pr] of Object.entries(repos.data)) {
-              pr.title.indexOf(date_string) > -1 && pulls.push(pr);
-            };
-            if (pulls.length == 0) {
-              console.log("Pull Request not found");
-              process.exit(0);
-            }
-            console.log("Retrieved Pull Requests:", pulls);
-            return pulls;
+#       - name: Find Pull Request
+#         uses: actions/github-script@v7
+#         id: find_pullrequests
+#         with:
+#           github-token: ${{secrets.GITHUB_TOKEN}}
+#           script: |
+#             // このactionが動く前日の日付のリリースブランチを探してくる
+#             date = new Date
+#             date.setDate(date.getDate() + 1)
+#             date_string = [date.getYear() + 1900, ('0' + (date.getMonth() + 1)).slice(-2) , ('0' + date.getDate()).slice(-2)].join('-')
+#             const repos = await github.rest.issues.listForRepo({
+#                 owner: context.repo.owner,
+#                 repo: context.repo.repo,
+#                 labels: 'deploy:auto',
+#                 state: 'open'
+#             })
+#             let pulls = [];
+#             for (const [index, pr] of Object.entries(repos.data)) {
+#               pr.title.indexOf(date_string) > -1 && pulls.push(pr);
+#             };
+#             if (pulls.length == 0) {
+#               console.log("Pull Request not found");
+#               process.exit(0);
+#             }
+#             console.log("Retrieved Pull Requests:", pulls);
+#             return pulls;
 
-      - name: Merge Pull Request
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{secrets.GITHUB_TOKEN}}
-          result-encoding: string
-          script: |
-            const pulls = JSON.parse('${{ steps.find_pullrequests.outputs.result }}');
-            for (const [index, pr] of Object.entries(pulls)) {
-                github.rest.pulls.merge({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  pull_number: pr.number
-                }).then((response) => {
-                  if (!response.data.merged) {
-                    core.setFailed("Pull Request cannot be merged")
-                  } else {
-                    console.log("merge successful")
-                  }
-                })
-            }
+#       - name: Merge Pull Request
+#         uses: actions/github-script@v7
+#         with:
+#           github-token: ${{secrets.GITHUB_TOKEN}}
+#           result-encoding: string
+#           script: |
+#             const pulls = JSON.parse('${{ steps.find_pullrequests.outputs.result }}');
+#             for (const [index, pr] of Object.entries(pulls)) {
+#                 github.rest.pulls.merge({
+#                   owner: context.repo.owner,
+#                   repo: context.repo.repo,
+#                   pull_number: pr.number
+#                 }).then((response) => {
+#                   if (!response.data.merged) {
+#                     core.setFailed("Pull Request cannot be merged")
+#                   } else {
+#                     console.log("merge successful")
+#                   }
+#                 })
+#             }
 
-      - name: aggregate issues
-        uses: actions/github-script@v7
-        id: aggregate_issues
-        with:
-          github-token: ${{secrets.GITHUB_TOKEN}}
-          result-encoding: string
-          script: |
-            const pulls = JSON.parse('${{ steps.find_pullrequests.outputs.result }}');
-            const issues = {}
-            for (const [index, pr] of Object.entries(pulls)) {
-              let page = 1;
-              while(1) {
-                const commit_response = await github.rest.pulls.listCommits({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  pull_number: pr.number,
-                  per_page: 100,
-                  page: page,
-                });
-                if (commit_response.data.length == 0) {
-                  break;
-                }
-                commit_response.data.forEach(commit => {
-                  // "[#1420] complete refactor for validation system"のようなフォーマットを期待
-                  const issue_id = (commit.commit.message.match(/^\[#(\d+)\]/) || [])[1];
-                  if (issue_id) {
-                    if (!issues[issue_id]) issues[issue_id] = {"commits": []};
-                    issues[issue_id].commits.push(commit);
-                  }
-                });
+#       - name: aggregate issues
+#         uses: actions/github-script@v7
+#         id: aggregate_issues
+#         with:
+#           github-token: ${{secrets.GITHUB_TOKEN}}
+#           result-encoding: string
+#           script: |
+#             const pulls = JSON.parse('${{ steps.find_pullrequests.outputs.result }}');
+#             const issues = {}
+#             for (const [index, pr] of Object.entries(pulls)) {
+#               let page = 1;
+#               while(1) {
+#                 const commit_response = await github.rest.pulls.listCommits({
+#                   owner: context.repo.owner,
+#                   repo: context.repo.repo,
+#                   pull_number: pr.number,
+#                   per_page: 100,
+#                   page: page,
+#                 });
+#                 if (commit_response.data.length == 0) {
+#                   break;
+#                 }
+#                 commit_response.data.forEach(commit => {
+#                   // "[#1420] complete refactor for validation system"のようなフォーマットを期待
+#                   const issue_id = (commit.commit.message.match(/^\[#(\d+)\]/) || [])[1];
+#                   if (issue_id) {
+#                     if (!issues[issue_id]) issues[issue_id] = {"commits": []};
+#                     issues[issue_id].commits.push(commit);
+#                   }
+#                 });
   
-                page += 1;
-              }
-            }
+#                 page += 1;
+#               }
+#             }
 
-            console.log("issues:", issues);
+#             console.log("issues:", issues);
 
-            for (const [issue_key, _] of Object.entries(issues)) {
-              issues[issue_key].issue = await github.rest.issues.get({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: issue_key,
-              });
-              console.log(issues[issue_key].issue.data.title);
-            }
+#             for (const [issue_key, _] of Object.entries(issues)) {
+#               issues[issue_key].issue = await github.rest.issues.get({
+#                 owner: context.repo.owner,
+#                 repo: context.repo.repo,
+#                 issue_number: issue_key,
+#               });
+#               console.log(issues[issue_key].issue.data.title);
+#             }
 
-            let text = "";
-            for (const [issue_key, _] of Object.entries(issues)) {
-              const issue = issues[issue_key].issue.data;
-              const commits = issues[issue_key].commits;
-              text += `• #${issue.number} <${issue.html_url}|${issue.title}>`;
-              text += "\\n";
-              // TODO 細かいコミットも入れたい
-              //commits.forEach(commit => text += `    • <${commit.html_url}|${commit.commit.message.split("\n")[0]}>\\n`);
-            }
-            console.log("最終text:", text);
-            return text;
+#             let text = "";
+#             for (const [issue_key, _] of Object.entries(issues)) {
+#               const issue = issues[issue_key].issue.data;
+#               const commits = issues[issue_key].commits;
+#               text += `• #${issue.number} <${issue.html_url}|${issue.title}>`;
+#               text += "\\n";
+#               // TODO 細かいコミットも入れたい
+#               //commits.forEach(commit => text += `    • <${commit.html_url}|${commit.commit.message.split("\n")[0]}>\\n`);
+#             }
+#             console.log("最終text:", text);
+#             return text;
 
-      - name: Send releasenotes
-        uses: slackapi/slack-github-action@v1
-        with:
-          payload: |
-            {
-              "author_name": "自動マージ",
-              "title": "リリースノート ${{ github.event.pull_request.html_url || github.event.head_commit.url }}",
-              "blocks": [
-                  {
-                      "type": "section",
-                      "text": {
-                          "type": "mrkdwn",
-                          "text": "リリースノート コミットログの先頭に [#XXXX] と入れるとリリースノートに記載されます"
-                      }
-                  },
-                  {
-                      "type": "section",
-                      "text": {
-                          "type": "mrkdwn",
-                          "text": "イシュー番号\n${{ steps.aggregate_issues.outputs.result }}"
-                      }
-                  }
-              ]
-            }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+#       - name: Send releasenotes
+#         uses: slackapi/slack-github-action@v1
+#         with:
+#           payload: |
+#             {
+#               "author_name": "自動マージ",
+#               "title": "リリースノート ${{ github.event.pull_request.html_url || github.event.head_commit.url }}",
+#               "blocks": [
+#                   {
+#                       "type": "section",
+#                       "text": {
+#                           "type": "mrkdwn",
+#                           "text": "リリースノート コミットログの先頭に [#XXXX] と入れるとリリースノートに記載されます"
+#                       }
+#                   },
+#                   {
+#                       "type": "section",
+#                       "text": {
+#                           "type": "mrkdwn",
+#                           "text": "イシュー番号\n${{ steps.aggregate_issues.outputs.result }}"
+#                       }
+#                   }
+#               ]
+#             }
+#         env:
+#           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+#           SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
