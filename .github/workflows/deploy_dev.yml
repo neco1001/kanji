@@ -13,8 +13,8 @@ jobs:
       # TARGET_ENV: development
       # ASSET_HOST: "https://cdn.minedia-dev.com"
       # APP_DOMAIN: "minedia-dev.com"
-      # AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
-      # AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
       # DEVISE_OPT_SECRET_ENCRYPTION_KEY: ${{ secrets.DEVISE_OPT_SECRET_ENCRYPTION_KEY_DEV }}
     steps:
     - name: install packages
