@@ -37,6 +37,8 @@ jobs:
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
           builder: ${{ steps.buildx.outputs.name }}
+        env:
+          DOCKER_BUILD_SUMMARY: false
       - name: Setup bundles
         run: |
           docker compose run -e "RAILS_ENV=${RAILS_ENV}" --rm app bundle install --path=vendor/bundle --jobs=4
