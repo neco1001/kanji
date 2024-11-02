@@ -70,6 +70,8 @@ jobs:
         TASKS=`aws ecs list-task-definition-families --family-prefix="${{ env.APP_NAME }}" --status=ACTIVE | jq -c -r '[.families[]]|join(" ")'`
         for item in $TASKS; do
           aws ecs describe-task-definition --task-definition $item --query taskDefinition > task-definition.$item.json
+          echo "Contents of task-definition.$item.json:"
+          cat task-definition.$item.json
         done
     - name: Debug TASKS variable
       run: echo "TASKS $TASKS"
