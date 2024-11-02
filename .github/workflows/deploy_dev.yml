@@ -12,7 +12,7 @@ jobs:
       # RAILS_ENV: production
       # TARGET_ENV: development
       # ASSET_HOST: "https://cdn.minedia-dev.com"
-      # APP_DOMAIN: "minedia-dev.com"
+      APP_DOMAIN: "kanji-dev.com"
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
       # DEVISE_OPT_SECRET_ENCRYPTION_KEY: ${{ secrets.DEVISE_OPT_SECRET_ENCRYPTION_KEY_DEV }}
@@ -33,3 +33,32 @@ jobs:
     - name: login ECR repository
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v2
+    # - name: build and push nginx image
+    #   id: build-image-nginx
+    #   env:
+    #     ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+    #     ECR_REPOSITORY: ${{ env.APP_NAME }}-nginx
+    #     IMAGE_TAG: release_${{ github.sha }}
+    #   run: |
+    #     docker build \
+    #       -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
+    #       -f config/docker/nginx/Dockerfile \
+    #       .
+    #     docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+    #     echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+    - name: build and push app image
+      id: build-image-app
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REPOSITORY: ${{ env.APP_NAME }}-app
+        IMAGE_TAG: release_${{ github.sha }}
+      run: |
+        docker build \
+          --build-arg rails_env=$RAILS_ENV \
+          --build-arg asset_host=$ASSET_HOST \
+          --build-arg app_domain=$APP_DOMAIN \
+          -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
+          -f config/docker/app/Dockerfile.deploy \
+          .
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
