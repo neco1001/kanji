@@ -68,6 +68,8 @@ jobs:
     - name: Download task definition
       run: |
         TASKS=`aws ecs list-task-definition-families --family-prefix="${{ env.APP_NAME }}" --status=ACTIVE | jq -c -r '[.families[]]|join(" ")'`
+        echo "Found task definitions: $TASKS"
         for item in $TASKS; do
           aws ecs describe-task-definition --task-definition $item --query taskDefinition > task-definition.$item.json
+          echo "Downloaded task definition for $item to task-definition.$item.json"
         done
