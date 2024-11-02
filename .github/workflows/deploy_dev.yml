@@ -67,5 +67,5 @@ jobs:
       run: docker logout ${{ steps.login-ecr.outputs.registry }}
     - name: Download task definition
       run: |
-        TASKS=`aws ecs list-task-definition-families --family-prefix="${{ env.APP_NAME }}" --status=ACTIVE
+        TASKS=`aws ecs list-task-definition-families --family-prefix="${{ env.APP_NAME }}" --status=ACTIVE`
         echo "Found task definitions: $TASKS"
