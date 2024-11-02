@@ -73,6 +73,8 @@ jobs:
           echo "Contents of task-definition.$item.json:"
           cat task-definition.$item.json
         done
+    - name: Debug TASKS variable
+      run: echo "TASKS: $TASKS"
     - name: Check task definition file
       run: ls -al
     - name: render new task definition for web-app
