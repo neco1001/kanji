@@ -18,7 +18,7 @@ RUN apt-get update -qq && apt-get install -y \
 COPY Gemfile Gemfile.lock ./
 
 # Bundlerを使ってGemをインストール
-RUN bundle install
+# RUN bundle install
 
 # アプリケーションコードをコピー
 COPY . .
