@@ -80,3 +80,4 @@ jobs:
         task-definition: task-definition.${{ env.APP_NAME }}-app.json
         container-name: kanji-app
         image: ${{ steps.build-image-app.outputs.image }}
+ 
