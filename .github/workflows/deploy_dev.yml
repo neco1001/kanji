@@ -75,8 +75,8 @@ jobs:
         done
     - name: Debug TASKS variable
       run: echo "TASKS: $TASKS"
-    - name: Check task definition file
-      run: ls -al
+    # - name: Check task definition file
+    #   run: ls -al
     - name: render new task definition for web-app
       id: render-container-web
       uses: aws-actions/amazon-ecs-render-task-definition@35d224b2ca3f343a8b46e0362c097786a88513bb
