@@ -65,3 +65,9 @@ jobs:
     - name: logout
       if: always()
       run: docker logout ${{ steps.login-ecr.outputs.registry }}
+    - name: Download task definition
+      run: |
+        TASKS=`aws ecs list-task-definition-families --family-prefix="${{ env.APP_NAME }}" --status=ACTIVE | jq -c -r '[.families[]]|join(" ")'`
+        for item in $TASKS; do
+          aws ecs describe-task-definition --task-definition $item --query taskDefinition > task-definition.$item.json
+        done
