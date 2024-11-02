@@ -79,5 +79,6 @@ jobs:
       with:
         task-definition: task-definition.${{ env.APP_NAME }}-app.json
         container-name: kanji-app
-        image: ${{ steps.build-image-app.outputs.image }}
- 
+        image: test-image # テスト用の新しいイメージ名
+        environment: |
+          MY_ENV_VAR=test_value # テスト用の環境変数を追加
