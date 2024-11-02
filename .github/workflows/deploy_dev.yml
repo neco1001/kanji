@@ -75,10 +75,9 @@ jobs:
         done
     - name: render new task definition for web-app
       id: render-container-web
-      uses: aws-actions/amazon-ecs-render-task-definition@35d224b2ca3f343a8b46e0362c097786a88513bb
+      # uses: aws-actions/amazon-ecs-render-task-definition@35d224b2ca3f343a8b46e0362c097786a88513bb
+      uses: aws-actions/amazon-ecs-render-task-definition@1
       with:
         task-definition: task-definition.${{ env.APP_NAME }}-app.json
         container-name: kanji-app
-        image: test-image # テスト用の新しいイメージ名
-        environment: |
-          MY_ENV_VAR=test_value # テスト用の環境変数を追加
+        image: ${{ steps.build-image-app.outputs.image }}
