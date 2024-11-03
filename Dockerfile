@@ -24,7 +24,7 @@ RUN bundle install
 COPY . .
 
 # ポートの公開
-EXPOSE 3000
+EXPOSE 80
 
 # アプリケーションの起動コマンド
 CMD ["rails", "server", "-b", "0.0.0.0"]
