@@ -27,4 +27,5 @@ COPY . .
 EXPOSE 80
 
 # アプリケーションの起動コマンド
-CMD ["rails", "server", "-b", "0.0.0.0"]
+# CMD ["rails", "server", "-b", "0.0.0.0"]
+CMD ["rails", "server", "-b", "0.0.0.0", "-p", "80"]
