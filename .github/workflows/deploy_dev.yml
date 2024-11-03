@@ -80,3 +80,11 @@ jobs:
         task-definition: task-definition.${{ env.APP_NAME }}-app.json
         container-name: kanji-app
         image: ${{ steps.build-image-app.outputs.image }}
+
+    - name: deploy to ECS
+      id: deploy-ecs
+      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+      with:
+        task-definition: ${{ steps.render-container-web.outputs.task-definition }}
+        service: ${{ env.APP_NAME }}-dev
+        cluster: ${{ env.APP_NAME }}-dev
