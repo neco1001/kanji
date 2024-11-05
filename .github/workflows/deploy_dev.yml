@@ -75,7 +75,7 @@ jobs:
         done
     - name: render new task definition for web-app
       id: render-container-web
-      uses: aws-actions/amazon-ecs-render-task-definition@1
+      uses: aws-actions/amazon-ecs-render-task-definition@v1
       with:
         task-definition: task-definition.${{ env.APP_NAME }}-app.json
         container-name: kanji-app
