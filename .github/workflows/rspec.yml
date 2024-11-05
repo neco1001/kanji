@@ -11,13 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: docker/setup-buildx-action@v3
-        id: buildx2
-      - name: Check Buildx Outputs
-        run: |
-          echo "Buildx Name: ${{ steps.buildx2.outputs.name }}"
-          echo "Buildx Driver: ${{ steps.buildx2.outputs.driver }}"
       - name: Cache Docker layers
-        id: buildx
         uses: actions/cache@v4
         with:
           path: /tmp/.buildx-cache
@@ -25,10 +19,6 @@ jobs:
           restore-keys: |
             ${{ github.ref }}
             refs/head/main
-      - name: Check Buildx Outputs
-        run: |
-          echo "Buildx Outputs:"
-          echo "${{ toJson(steps.buildx.outputs) }}"
       - name: Cache Composer layers
         uses: actions/cache@v4
         with:
@@ -45,7 +35,6 @@ jobs:
           file: Dockerfile
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
-          builder: ${{ steps.buildx.outputs.name }}
       - name: Setup bundles
         run: |
           docker compose run -e "RAILS_ENV=${RAILS_ENV}" --rm app bundle install --path=vendor/bundle --jobs=4
