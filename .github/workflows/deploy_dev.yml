@@ -68,6 +68,13 @@ jobs:
     - name: Download task definition
       run: |
         TASKS=`aws ecs list-task-definition-families --family-prefix="${{ env.APP_NAME }}" --status=ACTIVE | jq -c -r '[.families[]]|join(" ")'`
+
+        for item in $TASKS; do
+          aws ecs describe-task-definition --task-definition $item --query taskDefinition > task-definition.$item.json
+          echo "Contents(before) of task-definition.$item.json:"
+          cat task-definition.$item.json
+        done
+
         for item in $TASKS; do
           aws ecs describe-task-definition --task-definition $item --query taskDefinition | jq 'del(
               .taskDefinitionArn,
@@ -78,7 +85,7 @@ jobs:
               .registeredAt,
               .registeredBy
           )' > task-definition.$item.json
-          echo "Contents of task-definition.$item.json:"
+          echo "Contents(after) of task-definition.$item.json:"
           cat task-definition.$item.json
         done
     - name: render new task definition for web-app
