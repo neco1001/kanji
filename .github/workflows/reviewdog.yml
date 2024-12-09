@@ -12,11 +12,10 @@ jobs:
       # リポジトリをチェックアウト
       - uses: actions/checkout@v4
 
-      # grepで禁止フレーズを検索（TODO）
+      # grepで禁止フレーズを検索し結果を保存
       - name: Check for forbidden phrases
         run: |
-          grep -r "Deploy" . || true
-        continue-on-error: true  # grepが何も見つけなくてもジョブを失敗させない
+          grep -r "TODO" . > reviewdog_output.txt || true
 
       # reviewdogをセットアップ
       - name: Set up reviewdog
@@ -25,5 +24,4 @@ jobs:
       # reviewdogで解析結果をPRに投稿
       - name: Run reviewdog
         run: |
-          # 禁止フレーズチェックの結果をレビューに投稿
-          reviewdog -f=diff -reporter=github-pr-check -filter-mode=added
+          cat reviewdog_output.txt | reviewdog -f=diff -reporter=github-pr-check -filter-mode=added
