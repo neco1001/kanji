@@ -1,0 +1,26 @@
+name: Reviewdog Simple Example
+on: pull_request
+
+jobs:
+  reviewdog:
+    name: Run Reviewdog
+    runs-on: ubuntu-latest
+
+    steps:
+      # リポジトリをチェックアウト
+      - uses: actions/checkout@v4
+
+      # 禁止フレーズをチェックするカスタムスクリプト
+      - name: Check for forbidden phrases
+        run: |
+          # grepで禁止フレーズを検索
+          grep -r "TODO" . || true
+
+      # reviewdogで解析結果をPRに投稿
+      - name: Run Reviewdog
+        uses: reviewdog/action-run@v1
+        with:
+          tool_name: "Forbidden Phrases Check"  # チェック名
+          reporter: github-pr-check           # 結果をPRチェックに投稿
+          filter_mode: added                  # 差分行に限定して解析
+          fail_on_error: true                 # エラーがあればジョブを失敗させる
