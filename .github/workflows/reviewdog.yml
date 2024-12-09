@@ -17,6 +17,12 @@ jobs:
         run: |
           grep -r "TODO" . > reviewdog_output.txt || true
 
+      # grepの出力内容を確認
+      - name: Show grep output
+        run: |
+          echo "Contents of reviewdog_output.txt:"
+          cat reviewdog_output.txt
+
       # reviewdogをセットアップ
       - name: Set up reviewdog
         uses: reviewdog/action-setup@v1
