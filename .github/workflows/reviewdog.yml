@@ -15,7 +15,7 @@ jobs:
       # grepで禁止フレーズを検索し結果を保存
       - name: Check for forbidden phrases
         run: |
-          grep -r "TODO" . > reviewdog_output.txt || true
+          grep -n "TODO" . > reviewdog_output.txt || true
 
       # grepの出力内容を確認
       - name: Show grep output
@@ -30,4 +30,4 @@ jobs:
       # reviewdogで解析結果をPRに投稿
       - name: Run reviewdog
         run: |
-          cat reviewdog_output.txt | reviewdog -f=diff -reporter=github-pr-check -filter-mode=added
+          cat reviewdog_output.txt | reviewdog -efm="%f:%l:%m" -reporter=github-pr-check -filter-mode=added
