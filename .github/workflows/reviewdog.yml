@@ -12,16 +12,10 @@ jobs:
       # リポジトリをチェックアウト
       - uses: actions/checkout@v4
 
-      # REVIEWDOG_GITHUB_API_TOKENが正しく設定されているか確認する
-      - name: Check REVIEWDOG_GITHUB_API_TOKEN
-        run: |
-          echo "REVIEWDOG_GITHUB_API_TOKEN: $REVIEWDOG_GITHUB_API_TOKEN"
-        continue-on-error: true  # 失敗してもジョブを続行する
-
       # grepで禁止フレーズを検索（TODO）
       - name: Check for forbidden phrases
         run: |
-          grep -r "TODO" . || true
+          grep -r "Deploy" . || true
         continue-on-error: true  # grepが何も見つけなくてもジョブを失敗させない
 
       # reviewdogをセットアップ
