@@ -15,5 +15,5 @@ runner:
   grep-testpdf:
     cmd: git grep -n TestPdf app/
     errorformat:
-      - '%f:%l:%m'
+      - '%f:%l'
 
