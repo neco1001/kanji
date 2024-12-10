@@ -14,20 +14,20 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 22.x
-      # - name: cache vendor/bundle
-      #   uses: actions/cache@v4
-      #   with:
-      #     path: vendor/bundle
-      #     key: bundle-${{ hashFiles('**/Gemfile.lock') }}
+      - name: cache vendor/bundle
+        uses: actions/cache@v4
+        with:
+          path: vendor/bundle
+          key: bundle-${{ hashFiles('**/Gemfile.lock') }}
       # - name: cache node_modules
       #   uses: actions/cache@v4
       #   with:
       #     path: node_modules
       #     key: yarn-${{ hashFiles('**/yarn.lock') }}
-      # - name: bundle install
-      #   run: |
-      #     bundle config set --local path 'vendor/bundle'
-      #     bundle check || bundle install --jobs=4 --retry=3
+      - name: bundle install
+        run: |
+          bundle config set --local path 'vendor/bundle'
+          bundle check || bundle install --jobs=4 --retry=3
       # - name: yarn install
       #   run: yarn install
       - name: install reviewdog
