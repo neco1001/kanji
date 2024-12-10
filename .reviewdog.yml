@@ -13,7 +13,6 @@ runner:
 #  stylelint:
 #    cmd: yarn run stylelint app/**/*.{css,scss}
   grep-testpdf:
-    cmd: grep -r "TestPdf" app || true
-    level: error
-    message: "'TestPdf' should not exist in the codebase."
+    grep -n -r "TestPdf" app | awk -F: '{print $1 ":" $2 ":" $3}'
+
 
