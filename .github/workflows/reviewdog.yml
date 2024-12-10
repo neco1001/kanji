@@ -10,7 +10,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.3
+          ruby-version: 3.1.2
       - uses: actions/setup-node@v3
         with:
           node-version: 22.x
@@ -25,7 +25,9 @@ jobs:
           path: node_modules
           key: yarn-${{ hashFiles('**/yarn.lock') }}
       - name: bundle install
-        run: bundle check || bundle install --jobs=4 --retry=3 --path vendor/bundle
+        run: |
+          bundle config set --local path 'vendor/bundle'
+          bundle check || bundle install --jobs=4 --retry=3
       - name: yarn install
         run: yarn install
       - name: install reviewdog
