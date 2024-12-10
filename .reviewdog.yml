@@ -13,6 +13,7 @@ runner:
 #  stylelint:
 #    cmd: yarn run stylelint app/**/*.{css,scss}
   grep-testpdf:
-    cmd: git grep -n TestPdf app/ | sed 's/\([^:]*\):\([0-9]*\):/\1:\2:/'
+    cmd: git grep -n TestPdf app/
     errorformat:
-      - '%f:%l:%m'
+      - '%f:%l: TestPdfは使用しないでください。'
+
