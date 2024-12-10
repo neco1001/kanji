@@ -12,4 +12,9 @@ runner:
 #    cmd: yarn run eslint app/**/*.js
 #  stylelint:
 #    cmd: yarn run stylelint app/**/*.{css,scss}
+  grep-testpdf:
+    cmd: grep -r "TestPdf" app || true
+    format: raw
+    level: error
+    message: "'TestPdf' should not exist in the codebase."
 
