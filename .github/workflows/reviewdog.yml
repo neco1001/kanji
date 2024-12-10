@@ -30,5 +30,8 @@ jobs:
       #   run: yarn install
       - name: install reviewdog
         uses: reviewdog/action-setup@v1
+      - name: Debug grep output
+        run: |
+          grep -r "TestPdf" app || echo "No matches found"
       - name: reviewdog
         run: reviewdog -reporter=github-pr-check
