@@ -1,33 +1,38 @@
-name: Reviewdog Simple Example
-on: pull_request
-
+name: code_analysis
+on: [pull_request]
 jobs:
-  reviewdog:
-    name: Run Reviewdog
+  code_analysis:
+    name: runner
     runs-on: ubuntu-latest
     env:
       REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
     steps:
-      # リポジトリをチェックアウト
       - uses: actions/checkout@v4
-
-      # grepで禁止フレーズを検索し結果を保存
-      - name: Check for forbidden phrases
-        run: |
-          grep -n "TODO" . > reviewdog_output.txt || true
-
-      # grepの出力内容を確認
-      - name: Show grep output
-        run: |
-          echo "Contents of reviewdog_output.txt:"
-          cat reviewdog_output.txt
-
-      # reviewdogをセットアップ
-      - name: Set up reviewdog
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 22.x
+      - name: cache vendor/bundle
+        uses: actions/cache@v4
+        with:
+          path: vendor/bundle
+          key: bundle-${{ hashFiles('**/Gemfile.lock') }}
+      - name: cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: yarn-${{ hashFiles('**/yarn.lock') }}
+      - name: bundle install
+        run: bundle check || bundle install --jobs=4 --retry=3 --path vendor/bundle
+      - name: yarn install
+        run: yarn install
+      - name: install reviewdog
         uses: reviewdog/action-setup@v1
-
-      # reviewdogで解析結果をPRに投稿
-      - name: Run reviewdog
+      - name: Check for 'TestPdf' occurrences
         run: |
-          cat reviewdog_output.txt | reviewdog -efm="%f:%l:%m" -reporter=github-pr-check -filter-mode=added
+          mkdir -p reviewdog-report
+          grep -r --line-number "TestPdf" app > reviewdog-report/testpdf.log || true
+      - name: reviewdog
+        run: reviewdog -reporter=github-pr-check

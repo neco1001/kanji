@@ -1,4 +1,5 @@
 class PdfController < ApplicationController
+  # reviewdogテスト
   def test
     respond_to do |format|
       format.html
