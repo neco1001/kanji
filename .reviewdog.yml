@@ -1,5 +1,5 @@
 testpdf-check:
-    cmd: grep -r "TestPdf" app || true
-    format: raw
-    level: error
-    message: "'TestPdf' should not exist in the codebase."
+  cmd: grep -r "TestPdf" app || true
+  format: raw
+  level: error
+  message: "'TestPdf' should not exist in the codebase."
