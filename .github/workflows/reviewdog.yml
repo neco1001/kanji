@@ -30,9 +30,5 @@ jobs:
       #   run: yarn install
       - name: install reviewdog
         uses: reviewdog/action-setup@v1
-      - name: Check for 'TestPdf' occurrences
-        run: |
-          mkdir -p reviewdog-report
-          grep -r --line-number "TestPdf" app > reviewdog-report/testpdf.log || true
       - name: reviewdog
         run: reviewdog -reporter=github-pr-check
