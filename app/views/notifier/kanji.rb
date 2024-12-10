@@ -1,1 +1,1 @@
-# project.nam
+# project.name
