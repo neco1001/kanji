@@ -14,4 +14,5 @@ runner:
 #    cmd: yarn run stylelint app/**/*.{css,scss}
   grep-testpdf:
     cmd: git grep -n kanji app/ | sed 's/\([^:]*\):\([0-9]*\):/\1:\2:/'
-    errorformat: '%f:%l:%m'
+    errorformat:
+      - '%f:%l:%m'
