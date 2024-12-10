@@ -15,5 +15,5 @@ runner:
   grep-testpdf:
     cmd: git grep -n TestPdf app/ | sed 's/\([^:]*\):\([0-9]*\):/\1:\2:/'
     errorformat:
-      - '%f:%l'
+      - '%f:%l: TestPdfは使用しないでください。'
 
