@@ -12,7 +12,7 @@ runner:
 #    cmd: yarn run eslint app/**/*.js
 #  stylelint:
 #    cmd: yarn run stylelint app/**/*.{css,scss}
- grep-testpdf:
-  cmd: "git grep -n TestPdf app/ | sed 's/\([^:]*\):\([0-9]*\):.*/\1:\2: TestPdf is error/'"
-  errorformat:
-    - '%f:%l: %m'
+  grep-project-name:
+    cmd: git grep -n "project.name" app/views/notifier/ | sed 's/\([^:]*\):\([0-9]*\):.*/\1:\2:Found "project.name" in app\/views\/notifier./'
+    errorformat:
+      - '%f:%l:%m'
