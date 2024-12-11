@@ -14,7 +14,7 @@ runner:
 #    cmd: yarn run stylelint app/**/*.{css,scss}
   grep-project-name:
     cmd: |
-      git grep -n project.name app/views/notifier/ |
+      git grep -F -n 'project.name' app/views/notifier/ |
       sed 's/\([^:]*\):\([0-9]*\):.*/\1:\2:Found "project.name" in app\/views\/notifier./'
     errorformat:
       - '%f:%l:%m'
