@@ -1,0 +1,105 @@
+name: "[Dev] Deploy rails: build and push the image, define new task definition"
+on: [push]
+
+jobs:
+  deploy:
+    name: push container image and update task definition
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      # terraformで接頭子で使ってる物を入れる（ex. minedia-production)
+      APP_NAME: kanji
+      # RAILS_ENV: production
+      # TARGET_ENV: development
+      # ASSET_HOST: "https://cdn.minedia-dev.com"
+      APP_DOMAIN: "kanji-dev.com"
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
+      # DEVISE_OPT_SECRET_ENCRYPTION_KEY: ${{ secrets.DEVISE_OPT_SECRET_ENCRYPTION_KEY_DEV }}
+    steps:
+    - name: install packages
+      run: sudo apt update && sudo apt install -y jq
+    # Initial setup
+    - name: checkout
+      uses: actions/checkout@v4
+    - name: configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_REGION }}
+
+    # build and push this image
+    - name: login ECR repository
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v2
+    # - name: build and push nginx image
+    #   id: build-image-nginx
+    #   env:
+    #     ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+    #     ECR_REPOSITORY: ${{ env.APP_NAME }}-nginx
+    #     IMAGE_TAG: release_${{ github.sha }}
+    #   run: |
+    #     docker build \
+    #       -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
+    #       -f config/docker/nginx/Dockerfile \
+    #       .
+    #     docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+    #     echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+    - name: build and push app image
+      id: build-image-app
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REPOSITORY: ${{ env.APP_NAME }}-app
+        IMAGE_TAG: release_${{ github.sha }}
+      run: |
+        docker build \
+          --build-arg rails_env=$RAILS_ENV \
+          --build-arg asset_host=$ASSET_HOST \
+          --build-arg app_domain=$APP_DOMAIN \
+          -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
+          -f Dockerfile \
+          .
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+    - name: logout
+      if: always()
+      run: docker logout ${{ steps.login-ecr.outputs.registry }}
+    - name: Download task definition
+      run: |
+        TASKS=`aws ecs list-task-definition-families --family-prefix="${{ env.APP_NAME }}" --status=ACTIVE | jq -c -r '[.families[]]|join(" ")'`
+
+        for item in $TASKS; do
+          aws ecs describe-task-definition --task-definition $item --query taskDefinition > task-definition.$item.json
+          echo "Contents(before) of task-definition.$item.json:"
+          cat task-definition.$item.json
+        done
+
+        for item in $TASKS; do
+          aws ecs describe-task-definition --task-definition $item --query taskDefinition | jq 'del(
+              .taskDefinitionArn,
+              .requiresAttributes,
+              .compatibilities,
+              .revision,
+              .status,
+              .registeredAt,
+              .registeredBy
+          )' > task-definition.$item.json
+          echo "Contents(after) of task-definition.$item.json:"
+          cat task-definition.$item.json
+        done
+    - name: render new task definition for web-app
+      id: render-container-web
+      uses: aws-actions/amazon-ecs-render-task-definition@v1
+      with:
+        task-definition: task-definition.${{ env.APP_NAME }}-app.json
+        container-name: kanji-app
+        image: ${{ steps.build-image-app.outputs.image }}
+
+    - name: deploy to ECS
+      id: deploy-ecs
+      uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+      with:
+        task-definition: ${{ steps.render-container-web.outputs.task-definition }}
+        service: ${{ env.APP_NAME }}-dev
+        cluster: ${{ env.APP_NAME }}-dev
